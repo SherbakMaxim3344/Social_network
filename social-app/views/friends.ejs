@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+    <style>
+        .search-box {
+            position: relative;
+        }
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+        .search-input {
+            padding-left: 40px;
+        }
+        .friend-card {
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .friend-card:hover {
+            border-color: #0d6efd;
+            transform: translateY(-5px);
+        }
+        .no-results {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/news/<%= user.id %>">Социальная сеть</a>
+            <div class="navbar-nav ms-auto">
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
+                        <img src="<%= user.avatar || defaultAvatar %>" class="user-avatar me-2">
+                        <%= user.name %>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/profile/<%= user.id %>">👤 Мой профиль</a></li>
+                        <li><a class="dropdown-item" href="/friends/<%= user.id %>">🤝 Друзья</a></li>
+                        <li><a class="dropdown-item" href="/news/<%= user.id %>">📰 Лента новостей</a></li>
+                        <% if (user.role === 'admin') { %>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="https://localhost:3444" target="_blank">⚙️ Админ панель</a></li>
+                        <% } %>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="/">🚪 Выйти</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4 fade-in">
+        <div class="row">
+            <div class="col-md-10 mx-auto">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Управление друзьями</h2>
+                    <span class="badge bg-primary" id="friends-count"><%= friends.length %> друзей</span>
+                </div>
+
+                <!-- Текущие друзья -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4 class="mb-0">Мои друзья</h4>
+                    </div>
+                    <div class="card-body">
+                        <% if (friends.length === 0) { %>
+                            <div class="text-center text-muted py-4">
+                                <h5>😔 У вас пока нет друзей</h5>
+                                <p class="mb-0">Найдите друзей в списке ниже и добавьте их!</p>
+                            </div>
+                        <% } else { %>
+                            <div class="friends-grid" id="current-friends">
+                                <% friends.forEach(friend => { %>
+                                    <div class="friend-card" data-friend-name="<%= friend.name.toLowerCase() %>" 
+                                         data-friend-email="<%= friend.email.toLowerCase() %>">
+                                        <div class="text-center">
+                                            <img src="<%= friend.avatar || defaultAvatar %>" 
+                                                 class="avatar-medium mb-2">
+                                            <h6 class="mb-1"><%= friend.name %></h6>
+                                            <p class="text-muted small mb-2"><%= friend.email %></p>
+                                            <form action="/friends/<%= user.id %>/remove/<%= friend.id %>" method="POST">
+                                                <button type="submit" class="btn btn-danger btn-sm" 
+                                                        onclick="return confirm('Удалить <%= friend.name %> из друзей?')">
+                                                    ❌ Удалить
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                <% }); %>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+
+                <!-- Возможные друзья -->
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="mb-0">👥 Найти друзей</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="search-box mb-3">
+                            <span class="search-icon">🔍</span>
+                            <input type="text" class="form-control search-input" 
+                                   placeholder="Поиск по имени или email..."
+                                   id="friend-search">
+                        </div>
+                        
+                        <div class="no-results" id="no-results">
+                            <h5>😞 Ничего не найдено</h5>
+                            <p>Попробуйте изменить поисковый запрос</p>
+                        </div>
+                        
+                        <div class="friends-grid" id="potential-friends">
+                            <% potentialFriends.forEach(user => { %>
+                                <div class="friend-card" data-user-name="<%= user.name.toLowerCase() %>" 
+                                     data-user-email="<%= user.email.toLowerCase() %>">
+                                    <div class="text-center">
+                                        <img src="<%= user.avatar || defaultAvatar %>" 
+                                             class="avatar-medium mb-2">
+                                        <h6 class="mb-1"><%= user.name %></h6>
+                                        <p class="text-muted small mb-2"><%= user.email %></p>
+                                        <form action="/friends/<%= user.id %>/add/<%= user.id %>" method="POST">
+                                            <button type="submit" class="btn btn-success btn-sm">
+                                                ✅ Добавить в друзья
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            <% }); %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('friend-search');
+            const currentFriends = document.getElementById('current-friends');
+            const potentialFriends = document.getElementById('potential-friends');
+            const noResults = document.getElementById('no-results');
+            
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase().trim();
+                    let foundResults = false;
+                    
+                    // Поиск в текущих друзьях
+                    if (currentFriends) {
+                        const friendCards = currentFriends.querySelectorAll('.friend-card');
+                        friendCards.forEach(card => {
+                            const name = card.dataset.friendName;
+                            const email = card.dataset.friendEmail;
+                            
+                            if (name.includes(searchTerm) || email.includes(searchTerm)) {
+                                card.style.display = 'block';
+                                foundResults = true;
+                            } else {
+                                card.style.display = 'none';
+                            }
+                        });
+                    }
+                    
+                    // Поиск в потенциальных друзьях
+                    if (potentialFriends) {
+                        const userCards = potentialFriends.querySelectorAll('.friend-card');
+                        userCards.forEach(card => {
+                            const name = card.dataset.userName;
+                            const email = card.dataset.userEmail;
+                            
+                            if (name.includes(searchTerm) || email.includes(searchTerm)) {
+                                card.style.display = 'block';
+                                foundResults = true;
+                            } else {
+                                card.style.display = 'none';
+                            }
+                        });
+                    }
+                    
+                    // Показ/скрытие сообщения "не найдено"
+                    if (noResults) {
+                        if (!foundResults && searchTerm.length > 0) {
+                            noResults.style.display = 'block';
+                        } else {
+                            noResults.style.display = 'none';
+                        }
+                    }
+                });
+            }
+            
+            // Анимация появления карточек
+            const friendCards = document.querySelectorAll('.friend-card');
+            friendCards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'all 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 100 + (index * 50));
+            });
+        });
+    </script>
+</body>
+</html>

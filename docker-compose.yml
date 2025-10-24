@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  admin-app:
+    build: 
+      context: ./admin-app
+      dockerfile: Dockerfile
+    container_name: shcherbak_maxim_admin
+    ports:
+      - "3444:3444"   # HTTPS админка
+      - "3003:3003"   # HTTP редирект
+    volumes:
+      - ./shared/data:/app/data:rw          # ИЗМЕНИЛ на rw (read-write)
+      - ./shared/public:/app/public:ro      # Только для статических файлов
+      - ./shared/ssl:/app/ssl:ro            # Только для SSL
+    environment:
+      - NODE_ENV=production
+      - HTTPS_PORT=3444
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  social-app:
+    build: 
+      context: ./social-app
+      dockerfile: Dockerfile
+    container_name: shcherbak_maxim_social
+    ports:
+      - "3005:3005"   # Социальная сеть
+    volumes:
+      - ./shared/data:/app/data:rw          # ИЗМЕНИЛ на rw (read-write)
+      - ./shared/public:/app/public:ro      # Только для статических файлов
+    environment:
+      - NODE_ENV=production
+      - PORT=3005
+    restart: unless-stopped
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

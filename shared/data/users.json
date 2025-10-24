@@ -1,0 +1,74 @@
+[
+  {
+    "id": 1,
+    "name": "Иван Петров",
+    "email": "ivan@example.com",
+    "password": "admin123",
+    "birthDate": "1990-05-15",
+    "avatar": "/shared/public/images/_.jpeg",
+    "role": "admin",
+    "status": "active",
+    "createdAt": "2023-01-15T10:00:00Z",
+    "updatedAt": "2023-10-23T08:30:00Z"
+  },
+  {
+    "id": 2,
+    "name": "Мария Сидорова",
+    "email": "maria@example.com",
+    "password": "user123",
+    "birthDate": "1992-08-22",
+    "avatar": "/shared/public/images/k.jpg",
+    "role": "user",
+    "status": "active",
+    "createdAt": "2023-02-20T14:15:00Z",
+    "updatedAt": "2023-10-22T16:45:00Z"
+  },
+  {
+    "id": 3,
+    "name": "Алексей Козлов",
+    "email": "alex@example.com",
+    "password": "moderator123",
+    "birthDate": "1988-12-03",
+    "avatar": "/shared/public/images/icon.jpeg",
+    "role": "moderator",
+    "status": "active",
+    "createdAt": "2023-03-10T09:30:00Z",
+    "updatedAt": "2023-10-21T11:20:00Z"
+  },
+  {
+    "id": 4,
+    "name": "Елена Новикова",
+    "email": "elena@example.com",
+    "password": "user123",
+    "birthDate": "1995-03-18",
+    "avatar": "/shared/public/images/_.jpeg",
+    "role": "user",
+    "status": "pending",
+    "createdAt": "2023-10-23T07:00:00Z",
+    "updatedAt": "2023-10-23T07:00:00Z"
+  },
+  {
+    "id": 5,
+    "name": "Дмитрий Волков",
+    "email": "dmitry@example.com",
+    "password": "user123",
+    "birthDate": "1991-07-30",
+    "avatar": "/shared/public/images/_.jpeg",
+    "role": "user",
+    "status": "blocked",
+    "createdAt": "2023-09-05T16:20:00Z",
+    "updatedAt": "2023-10-20T13:10:00Z"
+  },
+  {
+    "id": 6,
+    "name": "Максим",
+    "email": "maksim8305@mail.ru",
+    "password": "Максим228",
+    "avatar": "/shared/public/images/default-avatar.png",
+    "role": "user",
+    "status": "active",
+    "birthDate": null,
+    "createdAt": "2025-10-24T19:30:15.282Z",
+    "updatedAt": "2025-10-24T19:30:15.282Z"
+  }
+]

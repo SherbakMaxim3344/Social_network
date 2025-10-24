@@ -1,0 +1,19 @@
+{
+  "name": "social-network",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Social network application with user registration, news feed, and posts",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "node --watch app.js",
+    "test": "jest"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "ejs": "^3.1.9"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}

@@ -1,0 +1,520 @@
+@import 'variables';
+@import 'mixins';
+
+// Базовые стили - Dark Red theme для ВСЕХ страниц
+body {
+  font-family: @font-family-base;
+  background: @gradient-dark;
+  color: @text-color;
+  line-height: @line-height-base;
+  padding: 0;
+  margin: 0;
+  min-height: 100vh;
+}
+
+// Общие стили для контейнера
+.container {
+  max-width: 1200px;
+  padding: 20px;
+}
+
+// Исправление выпадающего меню для темной темы
+.navbar-dark .dropdown-menu {
+  background: @gradient-dark;
+  border: 1px solid @dark-border;
+  border-radius: 12px;
+  box-shadow: @shadow-lg;
+  padding: 10px 0;
+  
+  .dropdown-item {
+    color: @text-color;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+    border-radius: 6px;
+    margin: 2px 10px;
+    width: auto;
+    
+    &:hover {
+      background: @gradient-primary;
+      color: white;
+      transform: translateX(5px);
+    }
+  }
+}
+
+// ОБЩИЕ СТИЛИ ДЛЯ ВСЕХ КАРТОЧЕК
+.card {
+  background: @gradient-dark;
+  border: 1px solid @dark-border;
+  border-radius: 16px;
+  box-shadow: @shadow-md;
+  transition: all 0.4s ease;
+  
+  &:hover {
+    box-shadow: @shadow-lg;
+    transform: translateY(-3px);
+  }
+}
+
+.card-body {
+  color: @text-color;
+}
+
+.card-title {
+  color: @text-color !important;
+  font-weight: 600;
+}
+
+.card-text {
+  color: @text-muted !important;
+}
+
+// Стили для страницы пользователей
+.user-card {
+  background: @gradient-dark;
+  border-radius: 16px;
+  padding: 0;
+  margin: 0;
+  box-shadow: @shadow-md;
+  border: 1px solid @dark-border;
+  border-left: 5px solid @primary-color;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: @gradient-primary;
+  }
+  
+  &:hover {
+    box-shadow: @shadow-lg;
+    transform: translateY(-5px) scale(1.02);
+    border-left-color: #ff6b6b;
+    background: lighten(@dark-card-bg, 3%);
+  }
+  
+  .card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.user-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid @primary-color;
+  background: @dark-bg;
+  box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.user-card:hover .user-avatar {
+  border-color: #ff6b6b;
+  transform: scale(1.1);
+}
+
+.user-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.user-name {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: @text-color;
+  margin-bottom: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.user-email {
+  color: @text-muted;
+  margin-bottom: 0.8rem;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.user-meta {
+  font-size: 0.9rem;
+  color: @text-muted;
+}
+
+// Стили для страницы друзей
+.friend-card {
+  background: @gradient-dark;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 10px 0;
+  border: 1px solid @dark-border;
+  border-left: 4px solid @success-color;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: @shadow-md;
+  }
+}
+
+.friend-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid @success-color;
+  background: @dark-bg;
+}
+
+// Стили для страницы новостей
+.news-post {
+  background: @gradient-dark;
+  border-radius: 16px;
+  padding: 25px;
+  margin: 20px 0;
+  border: 1px solid @dark-border;
+  border-left: 5px solid @info-color;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    box-shadow: @shadow-md;
+    transform: translateY(-3px);
+  }
+}
+
+.post-author {
+  font-weight: 700;
+  color: @primary-color;
+  font-size: 1.1rem;
+}
+
+.post-date {
+  color: @text-muted;
+  font-size: 0.9rem;
+}
+
+.post-content {
+  margin: @spacing-lg 0;
+  line-height: 1.7;
+  color: @text-color;
+  font-size: 1.05rem;
+}
+
+// Стили для формы редактирования
+.edit-form {
+  background: @gradient-dark;
+  border-radius: 16px;
+  box-shadow: @shadow-lg;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 30px;
+  border: 1px solid @dark-border;
+  border-left: 5px solid @primary-color;
+}
+
+// Бейджи статусов и ролей
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 2px solid transparent;
+  
+  &.active {
+    background: @gradient-success;
+    color: white;
+    box-shadow: 0 4px 15px fade(@success-color, 40%);
+    border-color: #22c55e;
+  }
+  
+  &.pending {
+    background: @gradient-warning;
+    color: white;
+    box-shadow: 0 4px 15px fade(@warning-color, 40%);
+    border-color: #f59e0b;
+  }
+  
+  &.blocked {
+    background: @gradient-danger;
+    color: white;
+    box-shadow: 0 4px 15px fade(@danger-color, 40%);
+    border-color: #ef4444;
+  }
+}
+
+.role-badge {
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 2px solid transparent;
+  
+  &.admin {
+    background: @gradient-danger;
+    color: white;
+    box-shadow: 0 4px 15px fade(@danger-color, 40%);
+    border-color: #ef4444;
+  }
+  
+  &.user {
+    background: @gradient-primary;
+    color: white;
+    box-shadow: 0 4px 15px fade(@primary-color, 40%);
+    border-color: #dc2626;
+  }
+  
+  &.moderator {
+    background: @gradient-info;
+    color: white;
+    box-shadow: 0 4px 15px fade(@info-color, 40%);
+    border-color: #06b6d4;
+  }
+}
+
+// Кнопки действий
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+  
+  .btn {
+    flex: 1;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 8px 12px;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    white-space: nowrap;
+    min-width: 0;
+    
+    &.btn-warning {
+      background: @gradient-warning;
+      border: none;
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px fade(@warning-color, 50%);
+      }
+    }
+    
+    &.btn-info {
+      background: @gradient-info;
+      border: none;
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px fade(@info-color, 50%);
+      }
+    }
+    
+    &.btn-success {
+      background: @gradient-success;
+      border: none;
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px fade(@success-color, 50%);
+      }
+    }
+    
+    &.btn-secondary {
+      background: @gradient-primary;
+      border: none;
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px fade(@primary-color, 50%);
+      }
+    }
+  }
+}
+
+// Формы
+.form-label {
+  font-weight: 600;
+  color: @primary-color;
+  margin-bottom: 8px;
+}
+
+.form-control, .form-select {
+  background: @dark-bg;
+  border: 2px solid @dark-border;
+  border-radius: 10px;
+  padding: 12px 16px;
+  color: @text-color;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  
+  &:focus {
+    background: @dark-bg;
+    border-color: @primary-color;
+    box-shadow: 0 0 0 3px fade(@primary-color, 20%);
+    color: @text-color;
+    transform: translateY(-2px);
+  }
+  
+  option {
+    background: @dark-bg;
+    color: @text-color;
+    padding: 10px;
+  }
+}
+
+// Заголовки
+h1, h2, h3, h4, h5, h6 {
+  color: @text-color;
+}
+
+.text-white {
+  color: @text-color !important;
+}
+
+.text-muted {
+  color: @text-muted !important;
+}
+
+// Адаптивность
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+  }
+  
+  .user-card {
+    margin-bottom: 1rem;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    gap: 6px;
+    
+    .btn {
+      width: 100%;
+      font-size: 0.8rem;
+      padding: 10px;
+    }
+  }
+  
+  .user-avatar {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .user-name {
+    font-size: 1.1rem;
+  }
+}
+
+// Анимации
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+// Глобальные исправления для темной темы
+.bg-primary {
+  background: @gradient-primary !important;
+}
+
+.badge.bg-primary {
+  background: @gradient-primary !important;
+}
+
+.bg-info {
+  background: @gradient-info !important;
+}
+
+.bg-success {
+  background: @gradient-success !important;
+}
+
+// Исправление отступов в сетке
+.row.g-4 {
+  margin: 0 -0.5rem;
+}
+
+.row.g-4 > [class*="col-"] {
+  padding: 0 0.5rem;
+}
+
+// Пустое состояние
+.empty-state {
+  padding: 60px 20px;
+  text-align: center;
+  
+  i {
+    opacity: 0.5;
+  }
+}
+
+// Стили для полей ввода даты (исправление для темной темы)
+input[type="date"] {
+  background: @dark-bg !important;
+  border: 2px solid @dark-border !important;
+  border-radius: 10px !important;
+  padding: 12px 16px !important;
+  color: @text-color !important;
+  font-size: 1rem !important;
+  transition: all 0.3s ease !important;
+  
+  &::-webkit-calendar-picker-indicator {
+    filter: invert(1) brightness(2);
+    cursor: pointer;
+  }
+  
+  &::-webkit-datetime-edit {
+    color: @text-color !important;
+  }
+  
+  &::-webkit-datetime-edit-fields-wrapper {
+    color: @text-color !important;
+  }
+  
+  &::-webkit-datetime-edit-text {
+    color: @text-color !important;
+  }
+  
+  &::-webkit-datetime-edit-month-field {
+    color: @text-color !important;
+  }
+  
+  &::-webkit-datetime-edit-day-field {
+    color: @text-color !important;
+  }
+  
+  &::-webkit-datetime-edit-year-field {
+    color: @text-color !important;
+  }
+  
+  &:focus {
+    background: @dark-bg !important;
+    border-color: @primary-color !important;
+    box-shadow: 0 0 0 3px fade(@primary-color, 20%) !important;
+    color: @text-color !important;
+  }
+}
