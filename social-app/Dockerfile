@@ -8,11 +8,13 @@ COPY package*.json ./
 # Устанавливаем зависимости
 RUN npm install
 
-# Копируем исходный код
+# Копируем ВСЕ файлы включая CSS
 COPY . .
 
-# Создаем необходимые папки
-RUN mkdir -p data public views
+# Создаем структуру папок и копируем CSS файлы
+RUN mkdir -p /app/public/css && \
+    find . -name "*.css" -exec cp {} /app/public/css/ \; 2>/dev/null || true && \
+    ls -la /app/public/css/
 
 EXPOSE 3005
 

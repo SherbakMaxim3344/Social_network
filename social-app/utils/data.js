@@ -5,8 +5,9 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const DATA_DIR = path.join(__dirname, '../data');
-export const DEFAULT_AVATAR = '/shared/public/images/default-avatar.png';
+const DATA_DIR = '/app/data';
+// ИСПРАВИЛ - убрал /shared/public
+export const DEFAULT_AVATAR = '/images/default-avatar.png';
 
 export const readJSON = async (filename) => {
   try {

@@ -23,5 +23,17 @@
     "id": 5,
     "userId": 3,
     "friendId": 1
+  },
+  {
+    "id": 6,
+    "userId": 6,
+    "friendId": 6,
+    "createdAt": "2025-10-25T20:07:48.249Z"
+  },
+  {
+    "id": 7,
+    "userId": 3,
+    "friendId": 3,
+    "createdAt": "2025-10-25T20:07:52.597Z"
   }
 ]

@@ -1,40 +1,35 @@
-import { readJSON, DEFAULT_AVATAR } from '../utils/data.js';
+import { readJSON } from '../utils/data.js';
 
 export const checkUserStatus = async (req, res, next) => {
   try {
     const userId = parseInt(req.params.userId);
+    
+    if (isNaN(userId)) {
+      return res.redirect('/?error=invalid_user');
+    }
+    
     const users = await readJSON('users.json');
     const user = users.find(u => u.id === userId);
     
     if (!user) {
-      return res.status(404).render('error', { 
-        error: 'Пользователь не найден',
-        defaultAvatar: DEFAULT_AVATAR
-      });
+      return res.redirect('/?error=user_not_found');
     }
     
     if (user.status === 'blocked') {
-      return res.status(403).render('error', { 
-        error: 'Ваш аккаунт заблокирован',
-        defaultAvatar: DEFAULT_AVATAR
-      });
+      return res.redirect('/?error=account_blocked');
     }
     
     if (user.status === 'pending') {
-      return res.status(403).render('error', { 
-        error: 'Ваш аккаунт ожидает подтверждения',
-        defaultAvatar: DEFAULT_AVATAR
-      });
+      return res.redirect('/?error=account_pending');
     }
     
-    // Добавляем пользователя в запрос для использования в роутах
+    // Добавляем пользователя в req для использования в других middleware
     req.user = user;
+    
     next();
   } catch (error) {
-    res.status(500).render('error', { 
-      error: 'Ошибка сервера',
-      defaultAvatar: DEFAULT_AVATAR
-    });
+    console.error('Auth middleware error:', error);
+    res.redirect('/?error=auth_error');
   }
 };
 

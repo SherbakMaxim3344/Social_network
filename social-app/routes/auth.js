@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
   res.render('index', { 
     title: 'Социальная сеть - Вход',
     error: req.query.error,
-    defaultAvatar: DEFAULT_AVATAR
+    defaultAvatar: '/images/default-avatar.png'
   });
 });
 
