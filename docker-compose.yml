@@ -28,8 +28,11 @@ services:
     ports:
       - "3005:3005"
     volumes:
-      - ./shared/data:/app/data:rw  # ДАННЫЕ
-      - ./shared/public/images:/app/public/images:ro  # ТОЛЬКО ИЗОБРАЖЕНИЯ
+      - ./shared/data:/app/shared/data:rw  # Данные
+      - ./shared/public/images:/app/public/images:ro  # Общие изображения
+      - ./social-app/views:/app/dist/views:ro  # Шаблоны
+      - ./social-app/public/css:/app/dist/public/css:ro  # CSS
+      - ./social-app/public/images:/app/dist/public/images:ro  # Локальные изображения
     environment:
       - NODE_ENV=production
       - PORT=3005

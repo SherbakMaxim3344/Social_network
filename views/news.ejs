@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+    <style>
+        .post-card {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: white;
+        }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .like-btn.liked {
+            background-color: #dc3545;
+            color: white;
+        }
+        .comments-section {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+        }
+        .comment {
+            background: #f8f9fa;
+            padding: 8px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+        .new-post {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/news/<%= user.id %>">Соцсеть</a>
+            <div class="navbar-nav ms-auto">
+                <span class="navbar-text text-white me-3">
+                    <img src="<%= user.avatar || defaultAvatar %>" class="user-avatar me-2">
+                    <%= user.name %>
+                </span>
+                <a class="btn btn-outline-light btn-sm me-2" href="/profile/<%= user.id %>">Профиль</a>
+                <a class="btn btn-outline-light btn-sm me-2" href="/friends/<%= user.id %>">Друзья</a>
+                <a class="btn btn-outline-light btn-sm" href="/">Выйти</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <!-- Форма нового поста -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Новый пост</h5>
+                        <form id="new-post-form">
+                            <div class="mb-3">
+                                <textarea class="form-control" id="post-content" rows="3" 
+                                          placeholder="Что у вас нового?" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Опубликовать</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Лента -->
+                <h4 class="mb-3">Лента новостей</h4>
+                <div id="news-feed">
+                    <% if (posts.length === 0) { %>
+                        <div class="alert alert-info">
+                            Пока нет постов. Добавьте друзей или создайте первый пост!
+                        </div>
+                    <% } else { %>
+                        <% posts.forEach(post => { %>
+                            <div class="post-card" data-post-id="<%= post.id %>">
+                                <div class="d-flex align-items-center mb-2">
+                                    <img src="<%= post.author.avatar || defaultAvatar %>" 
+                                         class="user-avatar me-2">
+                                    <div>
+                                        <strong><%= post.author.name %></strong>
+                                        <br>
+                                        <small class="text-muted">
+                                            <%= new Date(post.createdAt).toLocaleString('ru-RU') %>
+                                        </small>
+                                    </div>
+                                </div>
+                                <p class="mb-2"><%= post.content %></p>
+                                
+                                <!-- Действия -->
+                                <div class="d-flex gap-2 mb-2">
+                                    <button class="btn btn-sm <%= post.liked ? 'btn-danger' : 'btn-outline-danger' %> like-btn" 
+                                            data-post-id="<%= post.id %>">
+                                        ❤️ <%= post.likes %>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary comments-toggle" 
+                                            data-post-id="<%= post.id %>">
+                                        💬 Комментарии
+                                    </button>
+                                </div>
+
+                                <!-- Комментарии -->
+                                <div class="comments-section" id="comments-<%= post.id %>" style="display: none;">
+                                    <div class="comments-list mb-2">
+                                        <% if (post.comments && post.comments.length > 0) { %>
+                                            <% post.comments.forEach(comment => { %>
+                                                <div class="comment">
+                                                    <strong><%= comment.author.name %>:</strong> 
+                                                    <%= comment.content %>
+                                                    <small class="text-muted ms-2">
+                                                        <%= new Date(comment.createdAt).toLocaleString('ru-RU') %>
+                                                    </small>
+                                                </div>
+                                            <% }); %>
+                                        <% } else { %>
+                                            <div class="text-muted">Нет комментариев</div>
+                                        <% } %>
+                                    </div>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control comment-input" 
+                                               placeholder="Ваш комментарий..."
+                                               data-post-id="<%= post.id %>">
+                                        <button class="btn btn-primary add-comment" 
+                                                data-post-id="<%= post.id %>">
+                                            Отправить
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }); %>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Получаем ID пользователя из URL - самый надежный способ
+        const getCurrentUserId = () => {
+            const pathParts = window.location.pathname.split('/');
+            const userId = parseInt(pathParts[pathParts.length - 1]);
+            console.log('👤 Current user ID from URL:', userId);
+            return userId;
+        };
+
+        const currentUserId = getCurrentUserId();
+
+        // Добавление поста
+        document.getElementById('new-post-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const content = document.getElementById('post-content').value.trim();
+            
+            if (!content) return;
+
+            try {
+                const response = await fetch(`/api/posts/${currentUserId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    addPostToFeed(result.post);
+                    document.getElementById('post-content').value = '';
+                } else {
+                    alert('Ошибка: ' + result.error);
+                }
+            } catch (error) {
+                console.error('Ошибка публикации:', error);
+                alert('Ошибка публикации');
+            }
+        });
+
+        // Лайки
+        document.addEventListener('click', async (e) => {
+            if (e.target.classList.contains('like-btn')) {
+                const postId = e.target.dataset.postId;
+                await handleLike(postId, e.target);
+            }
+        });
+
+        // Показать/скрыть комментарии
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('comments-toggle')) {
+                const postId = e.target.dataset.postId;
+                const commentsSection = document.getElementById(`comments-${postId}`);
+                if (commentsSection.style.display === 'none' || !commentsSection.style.display) {
+                    commentsSection.style.display = 'block';
+                    e.target.textContent = '📝 Скрыть комментарии';
+                } else {
+                    commentsSection.style.display = 'none';
+                    e.target.textContent = '💬 Комментарии';
+                }
+            }
+        });
+
+        // Добавление комментария
+        document.addEventListener('click', async (e) => {
+            if (e.target.classList.contains('add-comment')) {
+                const postId = e.target.dataset.postId;
+                const input = document.querySelector(`.comment-input[data-post-id="${postId}"]`);
+                const content = input.value.trim();
+                
+                if (content) {
+                    await handleAddComment(postId, content);
+                    input.value = '';
+                }
+            }
+        });
+
+        // Отправка комментария по Enter
+        document.addEventListener('keypress', (e) => {
+            if (e.target.classList.contains('comment-input') && e.key === 'Enter') {
+                const postId = e.target.dataset.postId;
+                document.querySelector(`.add-comment[data-post-id="${postId}"]`).click();
+            }
+        });
+
+        // Функции
+        async function handleLike(postId, button) {
+            try {
+                console.log('❤️ Лайк поста:', postId, 'пользователем:', currentUserId);
+                const response = await fetch(`/api/posts/${postId}/like?userId=${currentUserId}`, {
+                    method: 'POST'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    button.textContent = `❤️ ${result.likes}`;
+                    button.className = result.liked ? 
+                        'btn btn-sm btn-danger like-btn' : 
+                        'btn btn-sm btn-outline-danger like-btn';
+                        
+                    // Анимация
+                    button.style.transform = 'scale(1.2)';
+                    setTimeout(() => {
+                        button.style.transform = 'scale(1)';
+                    }, 200);
+                } else {
+                    alert('Ошибка: ' + result.error);
+                }
+            } catch (error) {
+                console.error('Ошибка лайка:', error);
+                alert('Ошибка лайка');
+            }
+        }
+
+        async function handleAddComment(postId, content) {
+            try {
+                console.log('💬 Комментарий к посту:', postId, 'текст:', content);
+                const response = await fetch(`/api/posts/${postId}/comments`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: currentUserId, content })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    addCommentToPost(postId, result.comment);
+                } else {
+                    alert('Ошибка: ' + result.error);
+                }
+            } catch (error) {
+                console.error('Ошибка комментария:', error);
+                alert('Ошибка комментария');
+            }
+        }
+
+        function addPostToFeed(post) {
+            const newsFeed = document.getElementById('news-feed');
+            const emptyAlert = newsFeed.querySelector('.alert');
+            if (emptyAlert) emptyAlert.remove();
+
+            const postHTML = `
+                <div class="post-card new-post" data-post-id="${post.id}">
+                    <div class="d-flex align-items-center mb-2">
+                        <img src="${post.author.avatar || '<%= defaultAvatar %>'}" class="user-avatar me-2">
+                        <div>
+                            <strong>${post.author.name}</strong>
+                            <br>
+                            <small class="text-muted">${new Date().toLocaleString('ru-RU')}</small>
+                        </div>
+                    </div>
+                    <p class="mb-2">${post.content}</p>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-outline-danger like-btn" data-post-id="${post.id}">
+                            ❤️ 0
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary comments-toggle" data-post-id="${post.id}">
+                            💬 Комментарии
+                        </button>
+                    </div>
+                    <div class="comments-section" id="comments-${post.id}" style="display: none;">
+                        <div class="comments-list mb-2">
+                            <div class="text-muted">Нет комментариев</div>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" class="form-control comment-input" 
+                                   placeholder="Ваш комментарий..." data-post-id="${post.id}">
+                            <button class="btn btn-primary add-comment" data-post-id="${post.id}">
+                                Отправить
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            newsFeed.insertAdjacentHTML('afterbegin', postHTML);
+        }
+
+        function addCommentToPost(postId, comment) {
+            const commentsList = document.querySelector(`#comments-${postId} .comments-list`);
+            const noCommentsMsg = commentsList.querySelector('.text-muted');
+            if (noCommentsMsg) noCommentsMsg.remove();
+
+            const commentHTML = `
+                <div class="comment">
+                    <strong>${comment.author.name}:</strong> ${comment.content}
+                    <small class="text-muted ms-2">
+                        ${new Date(comment.createdAt).toLocaleString('ru-RU')}
+                    </small>
+                </div>
+            `;
+            commentsList.insertAdjacentHTML('beforeend', commentHTML);
+        }
+    </script>
+</body>
+</html>

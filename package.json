@@ -1,0 +1,28 @@
+{
+  "name": "social-network",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Social network application with user registration, news feed, and posts",
+  "main": "dist/app.js",
+  "scripts": {
+    "start": "node dist/app.js",
+    "dev": "tsx watch app.ts",
+    "build": "tsc",
+    "build:dev": "tsc --watch",
+    "test": "jest"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "ejs": "^3.1.9",
+    "socket.io": "^4.7.5"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.10.5",
+    "@types/ejs": "^3.1.5",
+    "@types/jest": "^29.5.12",
+    "typescript": "^5.3.3",
+    "tsx": "^4.6.2",
+    "jest": "^29.7.0"
+  }
+}
